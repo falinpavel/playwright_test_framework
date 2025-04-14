@@ -1,0 +1,23 @@
+name: Run Tests
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: my-python-playwright-image  # Собранный Docker-образ
+      volumes:
+        - ./reports:/app/reports
+
+    steps:
+      - name: Run tests
+        run: pytest --alluredir=reports/allure-results
+
+      - name: Generate Allure report
+        run: allure generate reports/allure-results -o reports/allure-report --clean
+
+      - name: Archive results
+        uses: actions/upload-artifact@v2
+        with:
+          name: allure-report
+          path: reports/allure-report
