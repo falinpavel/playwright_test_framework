@@ -3,23 +3,34 @@ on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
-    container:
-      image: my-python-playwright-image
-      volumes:
-        - ./reports:/app/reports
+    runs-on: ubuntu-latest  # Используем стандартный GitHub runner
 
     steps:
-      - name: Install dependencies
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install system dependencies
         run: |
-          apt-get update
-          apt-get install -y allure
+          sudo apt-get update
+          sudo apt-get install -y libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2
+
+      - name: Install Python dependencies
+        run: |
+          pip install -r requirements.txt
+          playwright install chromium
+          playwright install-deps  # Установка системных зависимостей для Playwright
 
       - name: Run tests
         run: pytest --alluredir=reports/allure-results
 
       - name: Generate Allure report
-        run: allure generate reports/allure-results -o reports/allure-report --clean
+        run: |
+          allure generate reports/allure-results -o reports/allure-report --clean
 
       - name: Upload Allure report
         uses: actions/upload-artifact@v4
