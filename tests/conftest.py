@@ -1,3 +1,4 @@
+import allure
 import pytest
 from playwright.sync_api import Browser, Page
 from utils.logger import logger

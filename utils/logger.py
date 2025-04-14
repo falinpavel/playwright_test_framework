@@ -24,3 +24,6 @@ def setup_logger(name: str = "tests"):
     logger.addHandler(file_handler)
 
     return logger
+
+
+logger = setup_logger()
