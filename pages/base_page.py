@@ -4,7 +4,7 @@ from playwright.sync_api import Page
 class BasePage:
     def __init__(self, page: Page):
         self.page = page
-        self.timeout = 5000  # Таймаут по умолчанию
+        self.timeout = 5000
 
     def click(self, selector: str):
         self.page.click(selector, timeout=self.timeout)
